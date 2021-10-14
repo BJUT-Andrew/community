@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--写与此mapper映射文件相匹配的DAO接口的全类名-->
+<mapper namespace="com.nowcoder.community.dao.DiscussPostMapper">
+
+    <sql id="selectFields">
+        id, user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
+    <!--若方法返回集合，则resultType中写集合中元素的类型即可。-->
+    <!--status代表帖子状态，2为删除，则不显示。-->
+
+    <!--★ 动态SQL，<if test=""/>标签拼接条件，test内条件直接写参数名，不用#{}。-->
+
+    <!--type表示是否置顶，create_time表示发布时间，降序排列查询。-->
+    <!--MySQL分页语句：limit offset, limit;-->
+    <select id="selectDiscussPosts" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where status != 2
+        <if test="userId != 0">
+            and user_id = #{userId}
+        </if>
+        order by type desc, create_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+
+    <!--★ 动态SQL，<if test=""/>标签拼接条件，test内条件直接写参数名，不用#{}。-->
+    <select id="selectDiscussPostRows" resultType="int">
+        select count(id)
+        from discuss_post
+        where status != 2
+        <if test="userId != 0">
+            and user_id = #{userId}
+        </if>
+    </select>
+
+
+
+
+
+
+</mapper>
