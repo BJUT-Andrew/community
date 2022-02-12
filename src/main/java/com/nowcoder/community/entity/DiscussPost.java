@@ -1,21 +1,46 @@
 package com.nowcoder.community.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.util.Date;
 
 /**
  * @author andrew
  * @create 2021-10-13 23:51
  */
+
+//将此实体类映射到ES中，索引名称、类型、分片数量、副本数量；
+@Document(indexName = "discusspost", type = "_doc", shards = 6, replicas = 3)
 public class DiscussPost {
 
+    @Id
     private int id;
+
+    @Field(type = FieldType.Integer)
     private int userId;
+
+    //为会被搜索的内容，定义“存储分词器”和“搜索分词器”
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String title;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String content;
+
+    @Field(type = FieldType.Integer)
     private int type;
+
+    @Field(type = FieldType.Integer)
     private int status;
+
+    @Field(type = FieldType.Date)
     private Date createTime;
+
+    @Field(type = FieldType.Integer)
     private int commentCount;
+
+    @Field(type = FieldType.Double)
     private double score;
 
     public int getId() {
